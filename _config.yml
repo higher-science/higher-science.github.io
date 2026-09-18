@@ -6,7 +6,7 @@ theme: jekyll-theme-chirpy
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
-lang: en
+lang: zh-CN
 
 # Change to your timezone › https://kevinnovak.github.io/Time-Zone-Picker
 timezone: Asia/Shanghai
@@ -28,20 +28,18 @@ description: >- # used by seo meta and the atom feed
 url: "https://higher-science.github.io"
 
 github:
-  username: github_username # change to your GitHub username
+  username: higher-science
 
 twitter:
-  username: twitter_username # change to your Twitter username
+  username: # 留空即隐藏 X／Twitter 图标
 
 social:
-  # Change to your full name.
-  # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Higher Science
-  email: higher.science@example.com # change to your email address
+  # 显示为文章默认作者与页脚版权所有者
+  name: 独立学者
+  email: ry_zhu@sina.com
   links:
-    # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your Twitter homepage
-    - https://github.com/higher-science # change to your GitHub homepage
+    # 第一个元素同时作为版权所有者链接
+    - https://github.com/higher-science
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
