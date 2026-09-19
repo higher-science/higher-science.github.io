@@ -61,7 +61,7 @@ def log(*a):
 
 
 def find_proxy():
-    """优先用本机 Clash 的混合端口；不通则不设代理。"""
+    """本机 Clash/代理端口（仅作最后兜底；直连优先）。"""
     for port in (26001, 7890, 7897):
         try:
             s = socket.create_connection(('127.0.0.1', port), timeout=0.6)
@@ -72,19 +72,60 @@ def find_proxy():
     return None
 
 
-def run_git(*args, proxy=None, timeout=240):
+# 清掉环境里的 HTTP(S)_PROXY：本机环境变量里的代理会把 git 带沟里（502/重置）。
+# 推送必须直连 github.com，直连不通时改用 GitHub 官方备用 IP 指定解析。
+_PROXY_KEYS = ['HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY',
+               'http_proxy', 'https_proxy', 'all_proxy']
+SPARE_IPS = ['140.82.114.3', '140.82.113.3', '140.82.112.3', '140.82.121.3']
+
+
+def clean_env():
+    env = dict(os.environ)
+    for k in _PROXY_KEYS:
+        env.pop(k, None)
+    env['GIT_TERMINAL_PROMPT'] = '0'
+    return env
+
+
+def run_git(*args, extra=(), proxy=None, timeout=240):
     cmd = ['git', '-C', REPO]
     if proxy:
         cmd += ['-c', 'http.proxy=' + proxy]
-    cmd += list(args)
-    env = dict(os.environ)
-    env['GIT_TERMINAL_PROMPT'] = '0'
+    else:
+        cmd += ['-c', 'http.proxy=']          # 显式关掉代理 -> 直连
+    cmd += list(extra) + list(args)
+    env = clean_env()
     if proxy:
         env['HTTPS_PROXY'] = proxy
         env['HTTP_PROXY'] = proxy
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
                        encoding='utf-8', errors='replace', env=env)
     return r.returncode, ((r.stdout or '') + (r.stderr or '')).strip()
+
+
+def push_main(branch=BRANCH):
+    """按 直连 -> 备用 IP -> 本机代理 的顺序推送，返回 (成功, 说明)。"""
+    tries = [('直连', (), None)]
+    for ip in SPARE_IPS:
+        tries.append(('指定 IP %s' % ip,
+                      ('-c', 'http.curloptResolve=github.com:443:%s' % ip), None))
+    proxy = find_proxy()
+    if proxy:
+        tries.append(('代理 %s' % proxy, (), proxy))
+
+    last = ''
+    for label, extra, px in tries:
+        try:
+            rc, out = run_git('push', REMOTE, branch, extra=extra, proxy=px,
+                              timeout=150)
+        except subprocess.TimeoutExpired:
+            log('  通道 %s 超时' % label)
+            continue
+        if rc == 0:
+            return True, label
+        last = out.replace('\n', ' ')
+        log('  通道 %-18s 不通：%s' % (label, last[:110]))
+    return False, last
 
 
 def slugify(title):
@@ -180,30 +221,28 @@ def main():
         log('\n（未发布。加 --push 即可自动提交并上线）')
         return 0
 
-    proxy = find_proxy()
-    log('代理   ：', proxy or '(直连)')
-
-    rc, out = run_git('add', '-A', proxy=proxy)
+    rc, out = run_git('add', '-A')
     if rc:
         log('git add 失败：', out)
         return 1
 
-    rc, out = run_git('commit', '-m', 'post: %s' % a.title, proxy=proxy)
+    rc, out = run_git('commit', '-m', 'post: %s' % a.title)
     if rc:
         log('git commit 失败：', out)
         return 1
     log('提交   ：', out.splitlines()[0] if out else 'ok')
 
-    rc, out = run_git('pull', '--rebase', REMOTE, BRANCH, proxy=proxy)
+    rc, out = run_git('pull', '--rebase', REMOTE, BRANCH, timeout=120)
     if rc:
-        log('（pull 未成功，继续尝试推送）：', out[:200])
+        log('（pull 未成功，继续尝试推送）：', out[:160])
 
-    rc, out = run_git('push', REMOTE, BRANCH, proxy=proxy)
-    if rc:
-        log('!! 推送失败：', out[:400])
+    log('推送   ：按 直连 → 备用 IP → 本机代理 顺序试')
+    ok, info = push_main(BRANCH)
+    if not ok:
+        log('!! 推送失败：', info[:300])
         log('文件已在本地保存（%s），可稍后重试 --push。' % fname)
         return 1
-    log('推送成功。')
+    log('推送成功（通道：%s）。' % info)
     log('约 1 分钟后上线：%s/posts/%s/' % (SITE, slug))
     log('构建进度：%s/actions' % REPO_URL)
     return 0
