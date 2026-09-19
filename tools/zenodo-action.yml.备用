@@ -1,0 +1,40 @@
+# ============================================================
+# 【备用路线 · 默认不启用】Zenodo 自动存档（GitHub Action 版）
+# ------------------------------------------------------------
+# 与 Zenodo 官方 GitHub 集成二选一，不要同时用（会重复建记录）。
+#
+# 这条路线的用途：不依赖 Zenodo 侧的 webhook 开关，由 Action 直接调
+# Zenodo API 建记录。好处是失败原因能在 GitHub Actions 日志里看到。
+#
+# 启用步骤：
+#   1. Zenodo 登录 → 右上角头像 → Applications → Developer Applications
+#      → Personal Access Tokens → 新建 token，scopes 勾选 deposit:write 与 deposit:actions
+#   2. 复制该 token
+#   3. GitHub 仓库 → Settings → Secrets and variables → Actions
+#      → New repository secret，名字填 ZENODO_TOKEN，值粘贴 token
+#   4. 把本文件改名为 .github/workflows/zenodo.yml（去掉 .备用 后缀）
+#   5. 之后每次在 GitHub 发布 Release，就会自动建一条 Zenodo 记录
+#
+# 第一次发布后会得到一个"父 DOI"（Zenodo 记录页上写"cite all versions"的那个）。
+# 把它填到下面的 doi: 一行，后续版本就会归到同一条记录下，而不是各建各的。
+# ============================================================
+
+name: Zenodo Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Zenodo Deploy
+        uses: nmfs-opensci/zenodo-gha@main
+        with:
+          token: ${{ secrets.ZENODO_TOKEN }}
+          zenodo_json: .zenodo.json
+          # 第一次发布时把下一行注释掉；拿到父 DOI 后取消注释并填入
+          # doi: 10.5281/zenodo.XXXXXXX

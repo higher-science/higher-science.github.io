@@ -1,0 +1,29 @@
+{
+  "title": "高等科学体系 · 学术站点（Higher Science — Academic Site）",
+  "description": "「高等科学体系」的学术站点源码与内容存档。该体系以信息本体论为基底，区分初等科学（对象可拆装、由外力组织）与高等科学（整体统摄成员、不可拆装），提出反身性统摄、认知权、生成逻辑、非还原律等核心命题，并给出 MIA（数学信息公设）形式化层。本站点为该体系的对外发布载体，包含文章、栏目、术语表与站点构建脚本。站点地址 http://higher-science.cn/ ，镜像 https://higher-science.github.io/ 。\n\nThe source code and content archive of the Higher Science academic website, presenting an information-ontology-based framework that distinguishes elementary science (decomposable, externally organised) from higher science (irreducibly holistic, self-organising), with the core concepts of reflexive subsumption, cognitive rights, generative logic, and the non-reduction law.",
+  "creators": [
+    {
+      "name": "Zhu, Ruiyu"
+    }
+  ],
+  "version": "1.0.0",
+  "access_right": "open",
+  "upload_type": "software",
+  "license": "cc-by-4.0",
+  "language": "zho",
+  "keywords": [
+    "高等科学体系",
+    "信息本体论",
+    "反身性统摄",
+    "认知权",
+    "生成逻辑",
+    "非还原律",
+    "初等科学与高等科学",
+    "数学信息公设",
+    "information ontology",
+    "reflexive subsumption",
+    "cognitive rights",
+    "generative logic",
+    "non-reduction law"
+  ]
+}

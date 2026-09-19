@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "如引用本作品，请使用下列信息。If you use this work, please cite it as below."
+title: "高等科学体系 · 学术站点（Higher Science — Academic Site）"
+abstract: >-
+  「高等科学体系」的学术站点源码与内容存档。该体系以信息本体论为基底，
+  区分初等科学（对象可拆装、由外力组织）与高等科学（整体统摄成员、不可拆装），
+  提出反身性统摄、认知权、生成逻辑、非还原律等核心命题，并给出 MIA（数学信息公设）形式化层。
+authors:
+  - family-names: Zhu
+    given-names: Ruiyu
+type: software
+version: 1.0.0
+date-released: "2026-09-19"
+license: CC-BY-4.0
+repository-code: "https://github.com/higher-science/higher-science.github.io"
+url: "http://higher-science.cn/"
+keywords:
+  - 高等科学体系
+  - 信息本体论
+  - 反身性统摄
+  - 认知权
+  - 生成逻辑
+  - 非还原律
+  - information ontology
+  - reflexive subsumption
+  - cognitive rights
