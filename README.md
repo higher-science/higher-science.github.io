@@ -54,7 +54,8 @@ python tools\new_post.py --title "文章标题" --file 草稿.md --push
 | **原创内容** | 全部文章、术语表、站点正文与其他原创文本 | **CC BY 4.0**（署名即可自由传播、改编，含商业使用）　Copyright (c) 2026 朱瑞宇 (Ruiyu Zhu) |
 | **站点主题与构建代码** | Jekyll / Chirpy 主题衍生部分 | **MIT**　Copyright (c) 2021 Cotes Chung　见 `LICENSE-MIT` |
 
-CC BY 4.0 完整文本见 [`LICENSE`](LICENSE)；
+CC BY 4.0 完整法律文本见 [`LICENSE`](LICENSE)；MIT 完整文本见 [`LICENSE-MIT`](LICENSE-MIT)；
+版权与许可的中文说明见 [`NOTICE.md`](NOTICE.md)；
 人类可读摘要：<https://creativecommons.org/licenses/by/4.0/deed.zh>
 
 ---
